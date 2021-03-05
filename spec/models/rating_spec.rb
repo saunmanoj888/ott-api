@@ -14,6 +14,6 @@ RSpec.describe Rating, type: :model do
       .with_message('rating already submitted')
   end
 
-  it { should belong_to(:video) }
+  it { should belong_to(:video).counter_cache(true) }
   it { should belong_to(:user) }
 end

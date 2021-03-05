@@ -16,8 +16,8 @@ RSpec.describe 'Reviews', type: :request do
       it 'returns all reviews for the movie' do
         get "/api/v1/movies/#{movie.id}/reviews"
         expect(json).not_to be_empty
-        expect(json.size).to eq(1)
-        expect(json.first).to have_key('id')
+        expect(json['reviews'].size).to eq(1)
+        expect(json['reviews'].first).to have_key('id')
         expect(response).to have_http_status(200)
       end
     end
@@ -40,7 +40,7 @@ RSpec.describe 'Reviews', type: :request do
       context 'When User has not reviewed the movie yet' do
         it 'creates a new review for the movie with valid attribute' do
           post "/api/v1/movies/#{movie.id}/reviews", params: valid_params
-          expect(json['body']).to eq('Must watch')
+          expect(json['review']['body']).to eq('Must watch')
         end
 
         it 'returns a validation message with invalid attribute' do
@@ -73,7 +73,7 @@ RSpec.describe 'Reviews', type: :request do
         before { set_current_user(review.user) }
         it 'updates the review successfully with valid attributes' do
           put "/api/v1/reviews/#{review.id}", params: valid_params
-          expect(json['body']).to eq('Must watch')
+          expect(json['review']['body']).to eq('Must watch')
         end
         it 'returns a validation message with invalid attributes' do
           put "/api/v1/reviews/#{review.id}", params: { review: { body: nil } }

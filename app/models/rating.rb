@@ -8,5 +8,5 @@ class Rating < ApplicationRecord
   validates_uniqueness_of :video_id, scope: :user_id, message: 'rating already submitted'
 
   belongs_to :user
-  belongs_to :video
+  belongs_to :video, counter_cache: true
 end

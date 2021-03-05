@@ -11,8 +11,8 @@ RSpec.describe 'Movies', type: :request do
       it 'returns all available movies with status code 200' do
         get '/api/v1/movies'
         expect(json).not_to be_empty
-        expect(json.size).to eq(1)
-        expect(json.first).to have_key('id')
+        expect(json['movies'].size).to eq(1)
+        expect(json['movies'].first).to have_key('id')
         expect(response).to have_http_status(200)
       end
     end
@@ -32,8 +32,8 @@ RSpec.describe 'Movies', type: :request do
       context 'When record exists' do
         it 'returns the movie with status code 200' do
           get "/api/v1/movies/#{movie.id}"
-          expect(json).not_to be_empty
-          expect(json).to have_key('id')
+          expect(json['movie']).not_to be_empty
+          expect(json['movie']).to have_key('id')
           expect(response).to have_http_status(200)
         end
       end
@@ -67,7 +67,7 @@ RSpec.describe 'Movies', type: :request do
 
         it 'creates a movie with valid attributes' do
           post '/api/v1/movies', params: valid_attributes
-          expect(json['title']).to eq('Saw')
+          expect(json['movie']['title']).to eq('Saw')
         end
 
         it 'returns validation message with invalid attributes' do
@@ -106,7 +106,7 @@ RSpec.describe 'Movies', type: :request do
 
         it 'updates a movie with valid attributes' do
           put "/api/v1/movies/#{movie.id}", params: valid_attributes
-          expect(json['title']).to eq('Saw Updated')
+          expect(json['movie']['title']).to eq('Saw Updated')
         end
 
         it 'returns validation message with invalid attributes' do

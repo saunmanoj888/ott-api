@@ -6,7 +6,7 @@ module Api
 
       def index
         # Need to use pagination below
-        @movies = Movie.all
+        @movies = Movie.all.includes(:reviews, :ratings)
         json_response(@movies)
       end
 
