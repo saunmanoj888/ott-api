@@ -10,5 +10,7 @@ class Ability
     else
       can :read, Movie
     end
+    can :update, [Rating, Review], user_id: user.id
+    can [:read, :create], [Rating, Review]
   end
 end

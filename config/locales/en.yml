@@ -2,4 +2,7 @@ en:
   unauthorized:
     default: "You are not allowed to perform this action."
     manage:
-      movie: "Not authorized to %{action} %{subject}."
+      movie: &error_message Not authorized to %{action} %{subject}.
+    update:
+      rating: *error_message
+      review: *error_message
