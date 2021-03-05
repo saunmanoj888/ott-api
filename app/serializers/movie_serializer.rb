@@ -4,6 +4,6 @@ class MovieSerializer < ActiveModel::Serializer
   has_many :reviews
 
   def average_ratings
-    "#{(object.ratings_sum / object.ratings_count).round(2)} / 5"
+    (object.ratings_sum / object.ratings_count).round(2)
   end
 end
