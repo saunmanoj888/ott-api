@@ -5,8 +5,7 @@ module Api
       before_action :set_movie, only: %i[show update destroy]
 
       def index
-        # Need to use pagination below
-        @movies = Movie.all.includes(:reviews, :ratings)
+        @movies = Movie.page(page).per(per_page).includes(:reviews, :ratings)
         json_response(@movies)
       end
 

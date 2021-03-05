@@ -6,8 +6,7 @@ module Api
       before_action :set_review, only: %i[update]
 
       def index
-        # Need to use pagination below
-        @reviews = @movie.reviews
+        @reviews = @movie.reviews.page(page).per(per_page)
         json_response(@reviews)
       end
 
