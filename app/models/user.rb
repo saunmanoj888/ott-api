@@ -5,4 +5,8 @@ class User < ApplicationRecord
   validates_uniqueness_of :email
 
   has_many :ratings, dependent: :destroy
+
+  def full_name
+    "#{first_name} #{last_name}"
+  end
 end
