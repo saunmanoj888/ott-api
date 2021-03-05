@@ -33,4 +33,8 @@ class ApplicationController < ActionController::API
 
     json_response({ error: 'Please log in' }, :unauthorized)
   end
+
+  def current_user
+    @current_user ||= @logged_in_user
+  end
 end
