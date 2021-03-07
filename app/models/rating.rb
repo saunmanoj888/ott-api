@@ -1,4 +1,6 @@
 class Rating < ApplicationRecord
+  include RateableDelegate
+
   validates_presence_of :value
   validates_numericality_of :value,
                             only_integer: true,
