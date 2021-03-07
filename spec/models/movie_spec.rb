@@ -10,6 +10,8 @@ RSpec.describe Movie, type: :model do
   it { should validate_presence_of(:budget) }
 
   it { should have_many(:ratings).dependent(:destroy) }
+  it { should have_many(:cast_crews) }
+  it { should have_many(:people).through(:cast_crews) }
 
   describe 'Instance Methods' do
     describe '#average_ratings' do
