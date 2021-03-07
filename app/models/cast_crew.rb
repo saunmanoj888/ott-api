@@ -3,4 +3,6 @@ class CastCrew < ApplicationRecord
 
   belongs_to :person
   belongs_to :video
+
+  delegate :name, to: :person
 end

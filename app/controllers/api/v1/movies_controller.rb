@@ -4,7 +4,7 @@ module Api
       load_and_authorize_resource
 
       def index
-        @movies = @movies.includes(:reviews, :ratings).page(page).per(per_page)
+        @movies = @movies.includes(:reviews, :ratings, :cast_crews).page(page).per(per_page)
         json_response(@movies)
       end
 
