@@ -1,9 +1,9 @@
 module Api
   module V1
     class RatingsController < ApplicationController
-      load_and_authorize_resource
+      load_and_authorize_resource only: :update
+
       before_action :set_movie, only: %i[index create]
-      before_action :set_rating, only: %i[update]
 
       def index
         @ratings = @movie.ratings.page(page).per(per_page)
@@ -35,10 +35,6 @@ module Api
 
       def set_movie
         @movie = Movie.find(params[:movie_id])
-      end
-
-      def set_rating
-        @rating = Rating.find(params[:id])
       end
 
     end
