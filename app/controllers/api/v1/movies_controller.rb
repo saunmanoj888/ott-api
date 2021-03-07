@@ -2,15 +2,13 @@ module Api
   module V1
     class MoviesController < ApplicationController
       load_and_authorize_resource
-      before_action :set_movie, only: %i[show update destroy]
 
       def index
-        @movies = Movie.page(page).per(per_page).includes(:reviews, :ratings)
+        @movies = @movies.includes(:reviews, :ratings).page(page).per(per_page)
         json_response(@movies)
       end
 
       def create
-        @movie = Movie.new(movie_params)
         if @movie.save
           json_response(@movie, :created)
         else
@@ -42,10 +40,6 @@ module Api
 
       def movie_params
         params.require(:movie).permit(:title, :description, :release_date, :budget)
-      end
-
-      def set_movie
-        @movie = Movie.find(params[:id])
       end
 
     end
