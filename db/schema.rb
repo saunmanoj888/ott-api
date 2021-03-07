@@ -70,7 +70,7 @@ ActiveRecord::Schema.define(version: 2021_03_05_172015) do
     t.string "type"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "ratings_count"
+    t.integer "ratings_count", default: 0
   end
 
 end
