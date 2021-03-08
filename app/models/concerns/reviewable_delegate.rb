@@ -1,4 +1,4 @@
-module RateableDelegate
+module ReviewableDelegate
   extend ActiveSupport::Concern
 
   included do

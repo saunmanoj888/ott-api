@@ -11,7 +11,7 @@ module Api
 
         if @user&.authenticate(params[:user][:password])
           json_response({
-            user: @user.as_json(only: [:id, :email]),
+            user:  @user.as_json(only: [:id, :email]),
             token: JsonWebToken.encode({ user_id: @user.id })
           })
         else
