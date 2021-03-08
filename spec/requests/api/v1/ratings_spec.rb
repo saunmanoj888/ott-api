@@ -3,14 +3,13 @@ require 'rails_helper'
 RSpec.describe 'Ratings', type: :request do
   let(:user) { create(:user) }
   let(:movie) { create(:movie) }
-  let(:rating) { create(:rating, user: user, video: movie) }
   let(:valid_params) { { rating: { value: 3 } } }
 
   describe 'GET /api/v1/movies/:movie_id/ratings' do
     context 'When User is logged in' do
       before do
         login
-        rating
+        create(:rating, user: user, video: movie)
       end
 
       it 'returns all ratings for the movie' do
@@ -50,7 +49,7 @@ RSpec.describe 'Ratings', type: :request do
       end
 
       context 'When User has already rated the movie' do
-        before { rating }
+        before { create(:rating, user: user, video: movie) }
         it 'does not allow to add rating again' do
           post "/api/v1/movies/#{movie.id}/ratings", params: valid_params
           expect(response.body).to match(/Video rating already submitted/)
@@ -67,6 +66,8 @@ RSpec.describe 'Ratings', type: :request do
   end
 
   describe 'PUT /api/v1/ratings/:id' do
+    let(:rating) { create(:rating, user: user, video: movie) }
+
     context 'When User is logged in' do
       before { login }
       context 'When rating belongs to the User' do

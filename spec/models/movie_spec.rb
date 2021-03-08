@@ -2,8 +2,6 @@ require 'rails_helper'
 
 RSpec.describe Movie, type: :model do
   let(:movie) { create(:movie) }
-  let(:rating_4) { create(:rating, video: movie) }
-  let(:rating_3) { create(:rating, value: 3, video: movie) }
 
   it { should validate_presence_of(:title) }
   it { should validate_presence_of(:description) }
@@ -17,8 +15,8 @@ RSpec.describe Movie, type: :model do
     describe '#average_ratings' do
       context 'When ratings is present for the movie' do
         before do
-          rating_4
-          rating_3
+          create(:rating, video: movie)
+          create(:rating, value: 3, video: movie)
         end
 
         it 'returns average of the ratings for the movie' do
