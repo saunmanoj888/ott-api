@@ -1,6 +1,7 @@
 module Api
   module V1
     class ReviewsController < ApplicationController
+      include FetchMovie
       load_and_authorize_resource only: :update
 
       before_action :set_movie, only: %i[index create]
@@ -31,10 +32,6 @@ module Api
 
       def review_params
         params.require(:review).permit(:body)
-      end
-
-      def set_movie
-        @movie = Movie.find(params[:movie_id])
       end
 
     end
