@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_07_175802) do
+ActiveRecord::Schema.define(version: 2021_03_08_183518) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -18,16 +18,23 @@ ActiveRecord::Schema.define(version: 2021_03_07_175802) do
   create_table "cast_crews", force: :cascade do |t|
     t.bigint "video_id"
     t.bigint "person_id"
-    t.string "designation"
+    t.bigint "profession_id"
     t.string "character"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["person_id"], name: "index_cast_crews_on_person_id"
+    t.index ["profession_id"], name: "index_cast_crews_on_profession_id"
     t.index ["video_id"], name: "index_cast_crews_on_video_id"
   end
 
   create_table "people", force: :cascade do |t|
     t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "professions", force: :cascade do |t|
+    t.string "designation"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

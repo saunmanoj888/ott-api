@@ -3,7 +3,7 @@ class Video < ApplicationRecord
 
   has_many :ratings, dependent: :destroy
   has_many :reviews, dependent: :destroy
-  has_many :cast_crews
+  has_many :cast_crews, dependent: :destroy
   has_many :people, through: :cast_crews
 
   def average_ratings
