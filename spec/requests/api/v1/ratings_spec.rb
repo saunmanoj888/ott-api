@@ -1,15 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe 'Ratings', type: :request do
-  let(:user) { create(:user) }
+  let(:admin_user) { create(:user, :admin) }
+  let(:non_admin_user) { create(:user, :non_admin) }
   let(:movie) { create(:movie) }
   let(:valid_params) { { rating: { value: 3 } } }
 
   describe 'GET /api/v1/movies/:movie_id/ratings' do
     context 'When User is logged in' do
       before do
-        login
-        create(:rating, user: user, movie: movie)
+        login(admin_user)
+        create(:rating, user: admin_user, movie: movie)
       end
 
       it 'returns all ratings for the movie' do
@@ -31,10 +32,7 @@ RSpec.describe 'Ratings', type: :request do
 
   describe 'POST /api/v1/movies/:movie_id/ratings' do
     context 'When User is logged in' do
-      before do
-        login
-        set_current_user(user)
-      end
+      before { login(admin_user) }
 
       context 'When User has not rated the movie yet' do
         it 'creates a new rating for the movie with valid attribute' do
@@ -49,7 +47,7 @@ RSpec.describe 'Ratings', type: :request do
       end
 
       context 'When User has already rated the movie' do
-        before { create(:rating, user: user, movie: movie) }
+        before { create(:rating, user: admin_user, movie: movie) }
         it 'does not allow to add rating again' do
           post "/api/v1/movies/#{movie.id}/ratings", params: valid_params
           expect(response.body).to match(/Movie rating already submitted/)
@@ -66,12 +64,11 @@ RSpec.describe 'Ratings', type: :request do
   end
 
   describe 'PUT /api/v1/ratings/:id' do
-    let(:rating) { create(:rating, user: user, movie: movie) }
+    let(:rating) { create(:rating, user: admin_user, movie: movie) }
 
     context 'When User is logged in' do
-      before { login }
       context 'When rating belongs to the User' do
-        before { set_current_user(rating.user) }
+        before { login(rating.user) }
         it 'updates the rating successfully with valid attributes' do
           put "/api/v1/ratings/#{rating.id}", params: valid_params
           expect(json['rating']['value']).to eq(3)
@@ -82,7 +79,7 @@ RSpec.describe 'Ratings', type: :request do
         end
       end
       context 'When rating does not belongs to the User' do
-        before { set_current_user(create(:user)) }
+        before { login(create(:user)) }
         it 'returns a unauthorised failure message' do
           put "/api/v1/ratings/#{rating.id}", params: valid_params
           expect(response.body).to match(/Not authorized to update Rating./)

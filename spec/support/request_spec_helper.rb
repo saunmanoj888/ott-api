@@ -3,11 +3,8 @@ module RequestSpecHelper
     JSON.parse(response.body)
   end
 
-  def login
+  def login(current_user)
     allow_any_instance_of(ApplicationController).to receive(:logged_in?).and_return(true)
-  end
-
-  def set_current_user(current_user)
     allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(current_user)
   end
 end

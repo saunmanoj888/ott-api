@@ -1,12 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe 'Movies', type: :request do
-  let(:user) { create(:user) }
+  let(:admin_user) { create(:user, :admin) }
+  let(:non_admin_user) { create(:user, :non_admin) }
   let!(:movie) { create(:movie) }
 
   describe 'GET /api/v1/movies' do
     context 'When User is logged in' do
-      before { login }
+      before { login(admin_user) }
 
       it 'returns all available movies with status code 200' do
         get '/api/v1/movies'
@@ -27,7 +28,7 @@ RSpec.describe 'Movies', type: :request do
 
   describe 'GET /api/v1/movies/:id' do
     context 'When User is logged in' do
-      before { login }
+      before { login(admin_user) }
 
       context 'When record exists' do
         it 'returns the movie with status code 200' do
@@ -58,12 +59,8 @@ RSpec.describe 'Movies', type: :request do
     let(:valid_attributes) { { movie: { title: 'Saw', description: 'horror', release_date: '01-01-2020', budget: 10000 } } }
 
     context 'When User is logged in' do
-      before { login }
       context 'When User is Admin' do
-        before do
-          user.add_role :admin
-          set_current_user(user)
-        end
+        before { login(admin_user) }
 
         it 'creates a movie with valid attributes' do
           post '/api/v1/movies', params: valid_attributes
@@ -76,7 +73,7 @@ RSpec.describe 'Movies', type: :request do
         end
       end
       context 'When User is not Admin' do
-        before { set_current_user(user) }
+        before { login(non_admin_user) }
 
         it 'returns an unauthorised failure messages' do
           post '/api/v1/movies', params: valid_attributes
@@ -97,12 +94,8 @@ RSpec.describe 'Movies', type: :request do
     let(:valid_attributes) { { movie: { title: 'Saw Updated' } } }
 
     context 'When User is logged in' do
-      before { login }
       context 'When User is Admin' do
-        before do
-          user.add_role :admin
-          set_current_user(user)
-        end
+        before { login(admin_user) }
 
         it 'updates a movie with valid attributes' do
           put "/api/v1/movies/#{movie.id}", params: valid_attributes
@@ -115,7 +108,7 @@ RSpec.describe 'Movies', type: :request do
         end
       end
       context 'When User is not Admin' do
-        before { set_current_user(user) }
+        before { login(non_admin_user) }
 
         it 'returns an unauthorised failure messages' do
           put "/api/v1/movies/#{movie.id}", params: valid_attributes
@@ -134,13 +127,9 @@ RSpec.describe 'Movies', type: :request do
 
   describe 'DELETE /api/v1/movies/:id' do
     context 'When User is logged in' do
-      before { login }
 
       context 'When User is Admin' do
-        before do
-          user.add_role :admin
-          set_current_user(user)
-        end
+        before { login(admin_user) }
 
         it 'deletes a movie successfully' do
           delete "/api/v1/movies/#{movie.id}"
@@ -149,7 +138,7 @@ RSpec.describe 'Movies', type: :request do
       end
 
       context 'When User is not Admin' do
-        before { set_current_user(user) }
+        before { login(non_admin_user) }
 
         it 'returns an unauthorised failure messages' do
           delete "/api/v1/movies/#{movie.id}"
