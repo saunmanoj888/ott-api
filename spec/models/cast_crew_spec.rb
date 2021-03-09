@@ -6,7 +6,4 @@ RSpec.describe CastCrew, type: :model do
   it { should belong_to(:video) }
   it { should belong_to(:person) }
   it { should belong_to(:profession) }
-
-  it { should delegate_method(:name).to(:person) }
-  it { should delegate_method(:designation).to(:profession) }
 end
