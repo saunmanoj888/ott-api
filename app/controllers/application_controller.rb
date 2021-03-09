@@ -1,5 +1,4 @@
 class ApplicationController < ActionController::API
-  include Response
   include ExceptionHandler
 
   before_action :authorize_user
@@ -46,5 +45,9 @@ class ApplicationController < ActionController::API
   DEFAULT_PER_PAGE = 20
   def per_page
     @per_page ||= params[:per_page] || DEFAULT_PER_PAGE
+  end
+
+  def json_response(object, status = :ok)
+    render json: object, status: status
   end
 end
