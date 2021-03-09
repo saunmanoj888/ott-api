@@ -26,6 +26,7 @@ RSpec.describe 'Ratings', type: :request do
       it 'returns a failure message' do
         get "/api/v1/movies/#{movie.id}/ratings"
         expect(response.body).to match(/Please log in/)
+        expect(response).to have_http_status(401)
       end
     end
   end
@@ -38,11 +39,13 @@ RSpec.describe 'Ratings', type: :request do
         it 'creates a new rating for the movie with valid attribute' do
           post "/api/v1/movies/#{movie.id}/ratings", params: valid_params
           expect(json['rating']['value']).to eq(3)
+          expect(response).to have_http_status(201)
         end
 
         it 'returns a validation message with invalid attribute' do
           post "/api/v1/movies/#{movie.id}/ratings", params: { rating: { value: nil } }
           expect(response.body).to match(/Value can't be blank/)
+          expect(response).to have_http_status(400)
         end
       end
 
@@ -51,6 +54,7 @@ RSpec.describe 'Ratings', type: :request do
         it 'does not allow to add rating again' do
           post "/api/v1/movies/#{movie.id}/ratings", params: valid_params
           expect(response.body).to match(/Movie rating already submitted/)
+          expect(response).to have_http_status(400)
         end
       end
     end
@@ -59,6 +63,7 @@ RSpec.describe 'Ratings', type: :request do
       it 'return a login failure message' do
         post "/api/v1/movies/#{movie.id}/ratings", params: valid_params
         expect(response.body).to match(/Please log in/)
+        expect(response).to have_http_status(401)
       end
     end
   end
@@ -72,10 +77,12 @@ RSpec.describe 'Ratings', type: :request do
         it 'updates the rating successfully with valid attributes' do
           put "/api/v1/ratings/#{rating.id}", params: valid_params
           expect(json['rating']['value']).to eq(3)
+          expect(response).to have_http_status(200)
         end
         it 'returns a validation message with invalid attributes' do
           put "/api/v1/ratings/#{rating.id}", params: { rating: { value: nil } }
           expect(response.body).to match(/Value can't be blank/)
+          expect(response).to have_http_status(400)
         end
       end
       context 'When rating does not belongs to the User' do
@@ -83,6 +90,7 @@ RSpec.describe 'Ratings', type: :request do
         it 'returns a unauthorised failure message' do
           put "/api/v1/ratings/#{rating.id}", params: valid_params
           expect(response.body).to match(/Not authorized to update Rating./)
+          expect(response).to have_http_status(401)
         end
       end
     end
@@ -91,6 +99,7 @@ RSpec.describe 'Ratings', type: :request do
       it 'returns a login failure message' do
         put "/api/v1/ratings/#{rating.id}", params: valid_params
         expect(response.body).to match(/Please log in/)
+        expect(response).to have_http_status(401)
       end
     end
   end

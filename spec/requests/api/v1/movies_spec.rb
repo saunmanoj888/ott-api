@@ -22,6 +22,7 @@ RSpec.describe 'Movies', type: :request do
       it 'returns a failure message' do
         get '/api/v1/movies'
         expect(response.body).to match(/Please log in/)
+        expect(response).to have_http_status(401)
       end
     end
   end
@@ -43,6 +44,7 @@ RSpec.describe 'Movies', type: :request do
         it 'returns a not found message' do
           get '/api/v1/movies/500'
           expect(response.body).to match(/Couldn't find Movie/)
+          expect(response).to have_http_status(404)
         end
       end
     end
@@ -51,6 +53,7 @@ RSpec.describe 'Movies', type: :request do
       it 'returns a failure message' do
         get '/api/v1/movies/1'
         expect(response.body).to match(/Please log in/)
+        expect(response).to have_http_status(401)
       end
     end
   end
@@ -65,11 +68,13 @@ RSpec.describe 'Movies', type: :request do
         it 'creates a movie with valid attributes' do
           post '/api/v1/movies', params: valid_attributes
           expect(json['movie']['title']).to eq('Saw')
+          expect(response).to have_http_status(201)
         end
 
         it 'returns validation message with invalid attributes' do
           post '/api/v1/movies', params: { movie: { title: nil } }
           expect(response.body).to match(/Title can't be blank/)
+          expect(response).to have_http_status(400)
         end
       end
       context 'When User is not Admin' do
@@ -78,6 +83,7 @@ RSpec.describe 'Movies', type: :request do
         it 'returns an unauthorised failure messages' do
           post '/api/v1/movies', params: valid_attributes
           expect(response.body).to match(/Not authorized to create Movie/)
+          expect(response).to have_http_status(401)
         end
       end
     end
@@ -86,6 +92,7 @@ RSpec.describe 'Movies', type: :request do
       it 'returns a login failure message' do
         post '/api/v1/movies', params: valid_attributes
         expect(response.body).to match(/Please log in/)
+        expect(response).to have_http_status(401)
       end
     end
   end
@@ -100,11 +107,13 @@ RSpec.describe 'Movies', type: :request do
         it 'updates a movie with valid attributes' do
           put "/api/v1/movies/#{movie.id}", params: valid_attributes
           expect(json['movie']['title']).to eq('Saw Updated')
+          expect(response).to have_http_status(200)
         end
 
         it 'returns validation message with invalid attributes' do
           put "/api/v1/movies/#{movie.id}", params: { movie: { title: nil } }
           expect(response.body).to match(/Title can't be blank/)
+          expect(response).to have_http_status(400)
         end
       end
       context 'When User is not Admin' do
@@ -113,6 +122,7 @@ RSpec.describe 'Movies', type: :request do
         it 'returns an unauthorised failure messages' do
           put "/api/v1/movies/#{movie.id}", params: valid_attributes
           expect(response.body).to match(/Not authorized to update Movie/)
+          expect(response).to have_http_status(401)
         end
       end
     end
@@ -121,6 +131,7 @@ RSpec.describe 'Movies', type: :request do
       it 'returns a login failure message' do
         put "/api/v1/movies/#{movie.id}", params: valid_attributes
         expect(response.body).to match(/Please log in/)
+        expect(response).to have_http_status(401)
       end
     end
   end
@@ -134,6 +145,7 @@ RSpec.describe 'Movies', type: :request do
         it 'deletes a movie successfully' do
           delete "/api/v1/movies/#{movie.id}"
           expect(json['message']).to eq('Movie destroyed successfully')
+          expect(response).to have_http_status(200)
         end
       end
 
@@ -143,6 +155,7 @@ RSpec.describe 'Movies', type: :request do
         it 'returns an unauthorised failure messages' do
           delete "/api/v1/movies/#{movie.id}"
           expect(response.body).to match(/Not authorized to destroy Movie/)
+          expect(response).to have_http_status(401)
         end
       end
     end
@@ -151,6 +164,7 @@ RSpec.describe 'Movies', type: :request do
       it 'returns a login failure message' do
         delete "/api/v1/movies/#{movie.id}"
         expect(response.body).to match(/Please log in/)
+        expect(response).to have_http_status(401)
       end
     end
   end
