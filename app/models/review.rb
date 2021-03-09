@@ -1,5 +1,4 @@
 class Review < ApplicationRecord
-  include ReviewableDelegate
 
   validates_presence_of :body
   validates_uniqueness_of :video_id, scope: :user_id, message: 'review already submitted'

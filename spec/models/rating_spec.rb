@@ -18,15 +18,6 @@ RSpec.describe Rating, type: :model do
       .with_message('rating already submitted')
   end
 
-  it { should delegate_method(:full_name).to(:user) }
   it { should belong_to(:video).counter_cache(true) }
   it { should belong_to(:user) }
-
-  describe 'Instance Method' do
-    describe '#added_by' do
-      it 'returns the full name of User who added the rating' do
-        expect(rating.added_by).to eq(user.full_name)
-      end
-    end
-  end
 end
