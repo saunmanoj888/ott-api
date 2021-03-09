@@ -6,8 +6,8 @@ class Rating < ApplicationRecord
                             greater_than_or_equal_to: 1,
                             less_than_or_equal_to: 5
 
-  validates_uniqueness_of :video_id, scope: :user_id, message: 'rating already submitted'
+  validates_uniqueness_of :movie_id, scope: :user_id, message: 'rating already submitted'
 
   belongs_to :user
-  belongs_to :video, counter_cache: true
+  belongs_to :movie, counter_cache: true
 end

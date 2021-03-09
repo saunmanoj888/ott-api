@@ -3,5 +3,5 @@ class Person < ApplicationRecord
   validates_uniqueness_of :name
 
   has_many :cast_crews
-  has_many :videos, through: :cast_crews
+  has_many :movies, through: :cast_crews
 end

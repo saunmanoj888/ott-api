@@ -3,7 +3,7 @@ class CreateReviews < ActiveRecord::Migration[6.1]
     create_table :reviews do |t|
       t.text :body
       t.references :user
-      t.references :video
+      t.references :movie
 
       t.timestamps
     end

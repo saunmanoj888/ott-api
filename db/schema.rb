@@ -16,15 +16,25 @@ ActiveRecord::Schema.define(version: 2021_03_08_183518) do
   enable_extension "plpgsql"
 
   create_table "cast_crews", force: :cascade do |t|
-    t.bigint "video_id"
+    t.bigint "movie_id"
     t.bigint "person_id"
     t.bigint "profession_id"
     t.string "character"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["movie_id"], name: "index_cast_crews_on_movie_id"
     t.index ["person_id"], name: "index_cast_crews_on_person_id"
     t.index ["profession_id"], name: "index_cast_crews_on_profession_id"
-    t.index ["video_id"], name: "index_cast_crews_on_video_id"
+  end
+
+  create_table "movies", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.date "release_date"
+    t.bigint "budget"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "ratings_count", default: 0
   end
 
   create_table "people", force: :cascade do |t|
@@ -41,22 +51,22 @@ ActiveRecord::Schema.define(version: 2021_03_08_183518) do
 
   create_table "ratings", force: :cascade do |t|
     t.integer "value"
-    t.bigint "video_id"
+    t.bigint "movie_id"
     t.bigint "user_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["movie_id"], name: "index_ratings_on_movie_id"
     t.index ["user_id"], name: "index_ratings_on_user_id"
-    t.index ["video_id"], name: "index_ratings_on_video_id"
   end
 
   create_table "reviews", force: :cascade do |t|
     t.text "body"
     t.bigint "user_id"
-    t.bigint "video_id"
+    t.bigint "movie_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["movie_id"], name: "index_reviews_on_movie_id"
     t.index ["user_id"], name: "index_reviews_on_user_id"
-    t.index ["video_id"], name: "index_reviews_on_video_id"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -84,17 +94,6 @@ ActiveRecord::Schema.define(version: 2021_03_08_183518) do
     t.index ["role_id"], name: "index_users_roles_on_role_id"
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
     t.index ["user_id"], name: "index_users_roles_on_user_id"
-  end
-
-  create_table "videos", force: :cascade do |t|
-    t.string "title"
-    t.text "description"
-    t.date "release_date"
-    t.bigint "budget"
-    t.string "type"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.integer "ratings_count", default: 0
   end
 
 end

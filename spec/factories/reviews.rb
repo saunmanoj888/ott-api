@@ -2,6 +2,6 @@ FactoryBot.define do
   factory :review do
     body { 'Nice Movie' }
     user
-    video { movie }
+    movie
   end
 end

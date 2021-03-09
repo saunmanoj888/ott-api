@@ -1,7 +1,7 @@
 class CastCrew < ApplicationRecord
-  validates :profession_id, uniqueness: { scope: %i[video_id person_id] }
+  validates :profession_id, uniqueness: { scope: %i[movie_id person_id] }
 
   belongs_to :person
-  belongs_to :video
+  belongs_to :movie
   belongs_to :profession
 end

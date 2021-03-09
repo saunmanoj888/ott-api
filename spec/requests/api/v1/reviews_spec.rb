@@ -9,7 +9,7 @@ RSpec.describe 'Reviews', type: :request do
     context 'When User is logged in' do
       before do
         login
-        create(:review, user: user, video: movie)
+        create(:review, user: user, movie: movie)
       end
 
       it 'returns all reviews for the movie' do
@@ -49,10 +49,10 @@ RSpec.describe 'Reviews', type: :request do
       end
 
       context 'When User has already reviewed the movie' do
-        before { create(:review, user: user, video: movie) }
+        before { create(:review, user: user, movie: movie) }
         it 'does not allow to add review again' do
           post "/api/v1/movies/#{movie.id}/reviews", params: valid_params
-          expect(response.body).to match(/Video review already submitted/)
+          expect(response.body).to match(/Movie review already submitted/)
         end
       end
     end
@@ -66,7 +66,7 @@ RSpec.describe 'Reviews', type: :request do
   end
 
   describe 'PUT /api/v1/reviews/:id' do
-    let(:review) { create(:review, user: user, video: movie) }
+    let(:review) { create(:review, user: user, movie: movie) }
 
     context 'When User is logged in' do
       before { login }

@@ -15,8 +15,8 @@ RSpec.describe Movie, type: :model do
     describe '#average_ratings' do
       context 'When ratings is present for the movie' do
         before do
-          create(:rating, video: movie)
-          create(:rating, value: 3, video: movie)
+          create(:rating, movie: movie)
+          create(:rating, value: 3, movie: movie)
         end
 
         it 'returns average of the ratings for the movie' do
