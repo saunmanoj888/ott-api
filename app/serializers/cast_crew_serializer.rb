@@ -2,7 +2,7 @@ class CastCrewSerializer < ActiveModel::Serializer
   attributes :name, :designation, :character
 
   def name
-    object.user.name
+    object.person.name
   end
 
   def designation
