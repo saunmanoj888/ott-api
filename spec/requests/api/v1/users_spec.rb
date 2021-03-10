@@ -8,7 +8,7 @@ RSpec.describe 'Users', type: :request do
     context 'when User Sign up with valid params' do
       before do
         post signup_url,
-        params: params('john@example.com', 'qwerty')
+        params: params('john@example.com', 'password')
       end
 
       it 'returns 200' do
@@ -37,7 +37,7 @@ RSpec.describe 'Users', type: :request do
         before do
           create(:user, email: 'john@example.com')
           post signup_url,
-          params: params('john@example.com', 'qwerty')
+          params: params('john@example.com', 'password')
         end
 
         it 'returns validation failure message' do
