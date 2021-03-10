@@ -17,6 +17,6 @@ class Ability
     can :destroy, [Review], user_id: user.id
     return unless user.is_admin?
     can :manage, Movie
-    can :destroy, [Review]
+    can :destroy, [Review, Rating]
   end
 end

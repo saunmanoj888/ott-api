@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe 'Ratings', type: :request do
   let(:admin_user) { create(:user, :admin) }
   let(:non_admin_user) { create(:user, :non_admin) }
+  let(:rating_by_admin) { create(:rating, user: admin_user) }
+  let(:rating_by_non_admin) { create(:rating, user: non_admin_user) }
   let(:movie) { create(:movie) }
   let(:valid_params) { { rating: { value: 3 } } }
 
@@ -98,6 +100,91 @@ RSpec.describe 'Ratings', type: :request do
     context 'When User is logged out' do
       it 'returns a login failure message' do
         put "/api/v1/ratings/#{rating.id}", params: valid_params
+        expect(response.body).to match(/Please log in/)
+        expect(response).to have_http_status(401)
+      end
+    end
+  end
+
+  describe 'DELETE /api/v1/ratings/:id' do
+    context 'When User is logged in' do
+      context 'When Record Exists' do
+        context 'When User is admin' do
+          before { login(admin_user) }
+          context 'When Admin is not blocked' do
+            context 'When rating belongs to the Admin' do
+              it 'deletes the rating successfully' do
+                delete "/api/v1/ratings/#{rating_by_admin.id}"
+                expect(response.body).to match(/Rating destroyed successfully/)
+                expect(response).to have_http_status(200)
+              end
+            end
+            context 'When rating does not belongs to the Admin' do
+              it 'deletes the rating successfully' do
+                delete "/api/v1/ratings/#{rating_by_non_admin.id}"
+                expect(response.body).to match(/Rating destroyed successfully/)
+                expect(response).to have_http_status(200)
+              end
+            end
+          end
+
+          context 'When Admin is blocked' do
+            context 'When rating belongs to the Admin' do
+              it 'unable to delete the rating' do
+              end
+            end
+            context 'When rating does not belongs to Admin' do
+              it 'unable to delete the rating' do
+              end
+            end
+          end
+        end
+
+        context 'When User is not admin' do
+          before { login(non_admin_user) }
+          context 'When User is not blocked' do
+            context 'When rating belongs to the User' do
+              it 'unable to delete the rating' do
+                delete "/api/v1/ratings/#{rating_by_non_admin.id}"
+                expect(response.body).to match(/Not authorized to destroy Rating/)
+                expect(response).to have_http_status(401)
+              end
+            end
+            context 'When rating does not belongs to the User' do
+              it 'unable to delete the rating' do
+                delete "/api/v1/ratings/#{rating_by_admin.id}"
+                expect(response.body).to match(/Not authorized to destroy Rating/)
+                expect(response).to have_http_status(401)
+              end
+            end
+          end
+
+          context 'When User is blocked' do
+            context 'When rating belongs to the User' do
+              it 'unable to delete the rating' do
+              end
+            end
+            context 'When rating does not belongs to User' do
+              it 'unable to delete the rating' do
+              end
+            end
+          end
+        end
+      end
+
+      context 'When Record does not Exist' do
+        before { login(admin_user) }
+        it 'returns a not found message' do
+          delete '/api/v1/ratings/101'
+          expect(response.body).to match(/Couldn't find Rating/)
+          expect(response).to have_http_status(404)
+        end
+      end
+    end
+
+    context 'When User is logged out' do
+      it 'returns a login failure message' do
+        delete "/api/v1/ratings/#{rating_by_admin.id}"
         expect(response.body).to match(/Please log in/)
         expect(response).to have_http_status(401)
       end

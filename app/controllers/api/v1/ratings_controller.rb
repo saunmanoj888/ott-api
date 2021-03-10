@@ -1,7 +1,7 @@
 module Api
   module V1
     class RatingsController < ApplicationController
-      load_and_authorize_resource only: :update
+      load_and_authorize_resource only: %i[update destroy]
 
       before_action :set_movie, only: %i[index create]
 
@@ -22,6 +22,14 @@ module Api
       def update
         if @rating.update(rating_params)
           json_response(@rating)
+        else
+          json_response({ error: @rating.errors.full_messages }, :bad_request)
+        end
+      end
+
+      def destroy
+        if @rating.destroy
+          json_response({ message: 'Rating destroyed successfully' })
         else
           json_response({ error: @rating.errors.full_messages }, :bad_request)
         end

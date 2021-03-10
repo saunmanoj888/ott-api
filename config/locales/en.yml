@@ -8,3 +8,4 @@ en:
       review: *error_message
     destroy:
       review: *error_message
+      rating: *error_message
