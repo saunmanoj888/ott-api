@@ -1,3 +1,11 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+  namespace :api, format: :json do
+    namespace :v1 do
+      resources :sessions, only: [:create]
+      resources :movies, shallow: true do
+        resources :ratings, only: [:create, :update, :index]
+        resources :reviews, only: [:create, :update, :index]
+      end
+    end
+  end
 end
