@@ -10,6 +10,7 @@ RSpec.describe User, type: :model do
   it { should validate_uniqueness_of(:email) }
 
   it { should have_many(:ratings).dependent(:destroy) }
+  it { should have_and_belong_to_many(:permissions) }
 
   describe 'Instance Methods' do
     describe '#full_name' do
