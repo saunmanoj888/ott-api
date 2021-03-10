@@ -1,10 +1,7 @@
 # Create User
 
-admin = User.create(email: 'admin@example.com', password: 'qwerty', first_name: 'John', last_name: 'Doe')
+admin = User.create(email: 'admin@example.com', password: 'qwerty', first_name: 'John', last_name: 'Doe', is_admin: true)
 user = User.create(email: 'user@example.com', password: 'qwerty', first_name: 'User', last_name: 'Doe')
-
-# Set Admin role
-admin.add_role :admin
 
 #Create Movie
 
