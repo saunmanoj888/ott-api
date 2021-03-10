@@ -6,3 +6,5 @@ en:
     update:
       rating: *error_message
       review: *error_message
+    destroy:
+      review: *error_message

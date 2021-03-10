@@ -1,7 +1,7 @@
 module Api
   module V1
     class ReviewsController < ApplicationController
-      load_and_authorize_resource only: :update
+      load_and_authorize_resource only: %i[update destroy]
 
       before_action :set_movie, only: %i[index create]
 
@@ -22,6 +22,14 @@ module Api
       def update
         if @review.update(review_params)
           json_response(@review)
+        else
+          json_response({ error: @review.errors.full_messages }, :bad_request)
+        end
+      end
+
+      def destroy
+        if @review.destroy
+          json_response({ message: 'Review destroyed successfully' })
         else
           json_response({ error: @review.errors.full_messages }, :bad_request)
         end
