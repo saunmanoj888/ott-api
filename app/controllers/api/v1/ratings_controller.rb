@@ -45,6 +45,10 @@ module Api
         @movie = Movie.find(params[:movie_id])
       end
 
+      def current_ability
+        @current_ability ||= RatingAbility.new(current_user)
+      end
+
     end
   end
 end
