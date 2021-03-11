@@ -38,20 +38,16 @@ RSpec.describe User, type: :model do
   end
 
   describe 'Callbacks' do
-    describe '.set_default_user_permissions' do
+    describe '.set_default_non_admin_permissions' do
       context 'When User Sign up successfully' do
-        before do
-          Permission::List::DEFAULT_APPLICABLE.each do |permission|
-            create(:permission, name: permission)
-          end
-        end
-        it 'creates default user permissions' do
+        before { create_all_permissions }
+        it 'creates default non admin permissions for the User' do
           expect {
             new_user.save
           }.to change { new_user.permissions.count }.from(0).to(5)
         end
         it 'should not have permission to delete ratings by default' do
-          expect(user.permissions).to_not include(create(:permission, :delete_rating))
+          expect(user.permissions).to_not include(Permission.named('can_delete_rating'))
         end
       end
     end
