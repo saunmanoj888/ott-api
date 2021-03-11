@@ -1,7 +1,7 @@
 module Api
   module V1
     class RatingsController < ApplicationController
-      load_and_authorize_resource only: %i[update destroy]
+      load_and_authorize_resource only: %i[create update destroy]
 
       before_action :set_movie, only: %i[index create]
 
