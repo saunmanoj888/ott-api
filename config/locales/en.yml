@@ -9,3 +9,6 @@ en:
     destroy:
       review: *error_message
       rating: *error_message
+    create:
+      rating: *error_message
+      review: *error_message

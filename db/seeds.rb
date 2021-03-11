@@ -1,7 +1,7 @@
 # Create User
 
 admin = User.create(email: 'admin@example.com', password: 'qwerty', first_name: 'John', last_name: 'Doe', is_admin: true)
-user = User.create(email: 'user@example.com', password: 'qwerty', first_name: 'User', last_name: 'Doe')
+user = User.create(email: 'user1@example.com', password: 'qwerty', first_name: 'User', last_name: 'Doe')
 
 #Create Movie
 
@@ -26,3 +26,14 @@ crew1.save
 
 cast2 = movie.cast_crews.new(person: person2, profession: job3, character: 'Mui')
 cast2.save
+
+all_permissions = [
+  { name: 'can_create_review' },
+  { name: 'can_edit_review' },
+  { name: 'can_delete_review' },
+  { name: 'can_create_rating' },
+  { name: 'can_edit_rating' },
+  { name: 'can_delete_rating' }
+]
+
+Permission.create(all_permissions)
