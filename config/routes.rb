@@ -6,7 +6,9 @@ Rails.application.routes.draw do
         resources :ratings, only: [:create, :update, :index, :destroy]
         resources :reviews, only: [:create, :update, :index, :destroy]
       end
-      resources :users, only: [:create]
+      resources :users, only: [:create] do
+        delete 'remove_permission', on: :member
+      end
     end
   end
 end

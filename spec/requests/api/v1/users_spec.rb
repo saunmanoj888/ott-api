@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe 'Users', type: :request do
 
   let(:signup_url) { '/api/v1/users' }
+  let(:user) { create(:user) }
 
   describe 'POST /api/v1/users' do
     context 'when User Sign up with valid params' do
@@ -44,6 +45,46 @@ RSpec.describe 'Users', type: :request do
           expect(response.body).to match(/Email has already been taken/)
           expect(response.status).to eq 400
         end
+      end
+    end
+  end
+
+  describe 'DELETE /api/v1/users/:id/remove_permission' do
+    context 'When User is logged in' do
+      context 'When User is Admin' do
+        before { login(create(:user, :admin)) }
+        context 'When Admin enters correct permission in params' do
+          before { create(:permission, :create_review) }
+          it 'removes the permissions successfully' do
+            delete "/api/v1/users/#{user.id}/remove_permission", params: { user: { permission: 'can_create_review' } }
+            expect(response.body).to match(/Permission removed successfully/)
+            expect(response.status).to eq 200
+          end
+        end
+
+        context 'When Admin enters incorrect permission in params' do
+          it 'returns a not found error message' do
+            delete "/api/v1/users/#{user.id}/remove_permission", params: { user: { permission: 'incorrect_permission' } }
+            expect(response.body).to match(/Couldn't find Permission/)
+            expect(response.status).to eq 404
+          end
+        end
+      end
+      context 'When User is not Admin' do
+        before { login(create(:user, :non_admin)) }
+        it 'returns unauthorised failure message' do
+          delete "/api/v1/users/#{user.id}/remove_permission", params: { user: { permission: 'can_create_review' } }
+          expect(response.body).to match(/You are not allowed to perform this action./)
+          expect(response.status).to eq 401
+        end
+      end
+    end
+
+    context 'When User is logged in' do
+      it 'returns a login failure message' do
+        delete "/api/v1/users/#{user.id}/remove_permission", params: { user: { permission: 'can_create_review' } }
+        expect(response.body).to match(/Please log in/)
+        expect(response.status).to eq 401
       end
     end
   end
