@@ -9,7 +9,7 @@ RSpec.describe 'Users', type: :request do
     context 'when User Sign up with valid params' do
       before do
         post signup_url,
-        params: params('john@example.com', 'password')
+        params: user_params('john@example.com', 'password')
       end
 
       it 'returns 200' do
@@ -25,7 +25,7 @@ RSpec.describe 'Users', type: :request do
       context 'When User passes any required field as empty' do
         before do
           post signup_url,
-          params: params('john@example.com', nil)
+          params: user_params('john@example.com', nil)
         end
 
         it 'returns validation failure message' do
@@ -38,7 +38,7 @@ RSpec.describe 'Users', type: :request do
         before do
           create(:user, email: 'john@example.com')
           post signup_url,
-          params: params('john@example.com', 'password')
+          params: user_params('john@example.com', 'password')
         end
 
         it 'returns validation failure message' do
@@ -51,12 +51,15 @@ RSpec.describe 'Users', type: :request do
 
   describe 'DELETE /api/v1/users/:id/remove_permission' do
     context 'When User is logged in' do
+
       context 'When User is Admin' do
         before { login(create(:user, :admin)) }
+
         context 'When Admin enters correct permission in params' do
           before { create(:permission, :create_review) }
+
           it 'removes the permissions successfully' do
-            delete "/api/v1/users/#{user.id}/remove_permission", params: { user: { permission: 'can_create_review' } }
+            delete "/api/v1/users/#{user.id}/remove_permission", params: permission_argument('can_create_review')
             expect(response.body).to match(/Permission removed successfully/)
             expect(response.status).to eq 200
           end
@@ -64,25 +67,27 @@ RSpec.describe 'Users', type: :request do
 
         context 'When Admin enters incorrect permission in params' do
           it 'returns a not found error message' do
-            delete "/api/v1/users/#{user.id}/remove_permission", params: { user: { permission: 'incorrect_permission' } }
+            delete "/api/v1/users/#{user.id}/remove_permission", params: permission_argument('incorrect_permission')
             expect(response.body).to match(/Couldn't find Permission/)
             expect(response.status).to eq 404
           end
         end
       end
+
       context 'When User is not Admin' do
         before { login(create(:user, :non_admin)) }
+
         it 'returns unauthorised failure message' do
-          delete "/api/v1/users/#{user.id}/remove_permission", params: { user: { permission: 'can_create_review' } }
+          delete "/api/v1/users/#{user.id}/remove_permission", params: permission_argument('can_create_review')
           expect(response.body).to match(/You are not allowed to perform this action./)
           expect(response.status).to eq 401
         end
       end
     end
 
-    context 'When User is logged in' do
+    context 'When User is logged out' do
       it 'returns a login failure message' do
-        delete "/api/v1/users/#{user.id}/remove_permission", params: { user: { permission: 'can_create_review' } }
+        delete "/api/v1/users/#{user.id}/remove_permission", params: permission_argument('can_create_review')
         expect(response.body).to match(/Please log in/)
         expect(response.status).to eq 401
       end
@@ -91,7 +96,7 @@ RSpec.describe 'Users', type: :request do
 
   private
 
-  def params(email, password)
+  def user_params(email, password)
     {
       user: {
         email:      email,
@@ -100,6 +105,10 @@ RSpec.describe 'Users', type: :request do
         last_name:  'doe'
       }
     }
+  end
+
+  def permission_argument(value)
+    { user: { permission: value } }
   end
 
 end
