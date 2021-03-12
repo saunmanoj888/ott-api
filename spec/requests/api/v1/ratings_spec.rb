@@ -35,9 +35,12 @@ RSpec.describe 'Ratings', type: :request do
 
   describe 'POST /api/v1/movies/:movie_id/ratings' do
     before { create(:permission, :create_rating) }
+
     context 'When User is logged in' do
       before { login(admin_user) }
+
       context 'When User has the permission to create a rating' do
+
         context 'When User has not rated the movie yet' do
           it 'creates a new rating for the movie with valid attribute' do
             post "/api/v1/movies/#{movie.id}/ratings", params: valid_params
@@ -54,6 +57,7 @@ RSpec.describe 'Ratings', type: :request do
 
         context 'When User has already rated the movie' do
           before { create(:rating, user: admin_user, movie: movie) }
+
           it 'does not allow to add rating again' do
             post "/api/v1/movies/#{movie.id}/ratings", params: valid_params
             expect(response.body).to match(/Movie rating already submitted/)
@@ -64,6 +68,7 @@ RSpec.describe 'Ratings', type: :request do
 
       context 'When User does not have permission to create a rating' do
         before { admin_user.permissions.destroy(Permission.find_by(name: 'can_create_rating')) }
+
         it 'returns unauthorized failure message' do
           post "/api/v1/movies/#{movie.id}/ratings", params: valid_params
           expect(response.body).to match(/Not authorized to create Rating/)
@@ -85,22 +90,28 @@ RSpec.describe 'Ratings', type: :request do
     before { create(:permission, :edit_rating) }
 
     context 'When User is logged in' do
+
       context 'When Record exists' do
+
         context 'When User is admin' do
           before { login(admin_user) }
+
           context 'When Admin has permission to update ratings' do
+
             context 'When rating belongs to the Admin' do
               it 'updates the rating successfully with valid attributes' do
                 put "/api/v1/ratings/#{rating_by_admin.id}", params: valid_params
                 expect(json['rating']['value']).to eq(3)
                 expect(response).to have_http_status(200)
               end
+
               it 'returns a validation message with invalid attributes' do
                 put "/api/v1/ratings/#{rating_by_admin.id}", params: { rating: { value: nil } }
                 expect(response.body).to match(/Value can't be blank/)
                 expect(response).to have_http_status(400)
               end
             end
+
             context 'When rating does not belongs to Admin' do
               it 'returns a unauthorised failure message' do
                 put "/api/v1/ratings/#{rating_by_non_admin.id}", params: valid_params
@@ -109,17 +120,20 @@ RSpec.describe 'Ratings', type: :request do
               end
             end
           end
+
           context 'When Admin does not have permission to update ratings' do
             before { admin_user.permissions.destroy(Permission.find_by(name: 'can_edit_rating')) }
+
             context 'When rating belongs to the Admin' do
-              it 'unable to update the rating' do
+              it 'returns unauthorized failure message' do
                 put "/api/v1/ratings/#{rating_by_admin.id}", params: valid_params
                 expect(response.body).to match(/Not authorized to update Rating./)
                 expect(response).to have_http_status(401)
               end
             end
+
             context 'When rating does not belongs to Admin' do
-              it 'unable to update the rating' do
+              it 'returns unauthorized failure message' do
                 put "/api/v1/ratings/#{rating_by_non_admin.id}", params: valid_params
                 expect(response.body).to match(/Not authorized to update Rating./)
                 expect(response).to have_http_status(401)
@@ -130,7 +144,9 @@ RSpec.describe 'Ratings', type: :request do
 
         context 'When User is not admin' do
           before { login(non_admin_user) }
+
           context 'When User has permission to update ratings' do
+
             context 'When rating belongs to the User' do
               it 'updates the rating successfully' do
                 put "/api/v1/ratings/#{rating_by_non_admin.id}", params: valid_params
@@ -138,25 +154,29 @@ RSpec.describe 'Ratings', type: :request do
                 expect(response).to have_http_status(200)
               end
             end
+
             context 'When rating does not belongs to User' do
-              it 'cannot update the rating' do
+              it 'returns unauthorized failure message' do
                 put "/api/v1/ratings/#{rating_by_admin.id}", params: valid_params
                 expect(response.body).to match(/Not authorized to update Rating./)
                 expect(response).to have_http_status(401)
               end
             end
           end
+
           context 'When User does not have permission to update ratings' do
             before { non_admin_user.permissions.destroy(Permission.find_by(name: 'can_edit_rating')) }
+
             context 'When rating belongs to the User' do
-              it 'cannot update the rating' do
+              it 'returns unauthorized failure message' do
                 put "/api/v1/ratings/#{rating_by_non_admin.id}", params: valid_params
                 expect(response.body).to match(/Not authorized to update Rating./)
                 expect(response).to have_http_status(401)
               end
             end
+
             context 'When rating does not belongs to User' do
-              it 'cannot update the rating' do
+              it 'returns unauthorized failure message' do
                 put "/api/v1/ratings/#{rating_by_admin.id}", params: valid_params
                 expect(response.body).to match(/Not authorized to update Rating./)
                 expect(response).to have_http_status(401)
@@ -165,8 +185,10 @@ RSpec.describe 'Ratings', type: :request do
           end
         end
       end
+
       context 'When Record does not exists' do
         before { login(admin_user) }
+
         it 'returns a not found message' do
           put '/api/v1/ratings/111', params: valid_params
           expect(response.body).to match(/Couldn't find Rating/)
@@ -186,12 +208,17 @@ RSpec.describe 'Ratings', type: :request do
 
   describe 'DELETE /api/v1/ratings/:id' do
     before { create(:permission, :delete_rating) }
+
     context 'When User is logged in' do
+
       context 'When Record Exists' do
+
         context 'When User is admin' do
           before { login(admin_user) }
+
           context 'When Admin has permission to delete ratings' do
             before { admin_user.permissions << Permission.find_by(name: 'can_delete_rating') }
+
             context 'When rating belongs to the Admin' do
               it 'deletes the rating successfully' do
                 delete "/api/v1/ratings/#{rating_by_admin.id}"
@@ -199,6 +226,7 @@ RSpec.describe 'Ratings', type: :request do
                 expect(response).to have_http_status(200)
               end
             end
+
             context 'When rating does not belongs to the Admin' do
               it 'deletes the rating successfully' do
                 delete "/api/v1/ratings/#{rating_by_non_admin.id}"
@@ -210,15 +238,17 @@ RSpec.describe 'Ratings', type: :request do
 
           context 'When Admin does not have permission to delete ratings' do
             before { admin_user.permissions.destroy(Permission.find_by(name: 'can_delete_rating')) }
+
             context 'When rating belongs to the Admin' do
-              it 'unable to delete the rating' do
+              it 'returns unauthorized failure message' do
                 delete "/api/v1/ratings/#{rating_by_admin.id}"
                 expect(response.body).to match(/Not authorized to destroy Rating./)
                 expect(response).to have_http_status(401)
               end
             end
+
             context 'When rating does not belongs to Admin' do
-              it 'unable to delete the rating' do
+              it 'returns unauthorized failure message' do
                 delete "/api/v1/ratings/#{rating_by_non_admin.id}"
                 expect(response.body).to match(/Not authorized to destroy Rating./)
                 expect(response).to have_http_status(401)
@@ -232,14 +262,15 @@ RSpec.describe 'Ratings', type: :request do
 
           shared_context 'non_admin_user_deletes_the_rating' do
             context 'When rating belongs to the User' do
-              it 'cannot delete the rating' do
+              it 'returns unauthorized failure message' do
                 delete "/api/v1/ratings/#{rating_by_non_admin.id}"
                 expect(response.body).to match(/Not authorized to destroy Rating/)
                 expect(response).to have_http_status(401)
               end
             end
+
             context 'When rating does not belongs to the User' do
-              it 'cannot delete the rating' do
+              it 'returns unauthorized failure message' do
                 delete "/api/v1/ratings/#{rating_by_admin.id}"
                 expect(response.body).to match(/Not authorized to destroy Rating/)
                 expect(response).to have_http_status(401)
@@ -249,8 +280,10 @@ RSpec.describe 'Ratings', type: :request do
 
           context 'When User has the permission to delete rating' do
             before { non_admin_user.permissions << Permission.find_by(name: 'can_delete_rating') }
+
             include_context 'non_admin_user_deletes_the_rating'
           end
+
           context 'When User does not have the permission to delete rating' do
             include_context 'non_admin_user_deletes_the_rating'
           end
@@ -259,6 +292,7 @@ RSpec.describe 'Ratings', type: :request do
 
       context 'When Record does not Exist' do
         before { login(admin_user) }
+
         it 'returns a not found message' do
           delete '/api/v1/ratings/101'
           expect(response.body).to match(/Couldn't find Rating/)
