@@ -4,7 +4,7 @@ module Api
       load_and_authorize_resource only: :remove_permission
 
       skip_before_action :authorize_user, only: :create
-      before_action :find_permission, only: :remove_permission
+      before_action :find_user_permission, only: :remove_permission
 
       def create
         @user = User.new(user_params)
@@ -16,7 +16,7 @@ module Api
       end
 
       def remove_permission
-        if @permission && @user.permissions.destroy(@permission)
+        if @user_permission && @user.permissions.destroy(@user_permission)
           json_response({ message: 'Permission removed successfully' })
         else
           json_response({ error: 'Could not find Permission for the User' }, :not_found)
@@ -29,8 +29,8 @@ module Api
         params.require(:user).permit(:email, :password, :first_name, :last_name)
       end
 
-      def find_permission
-        @permission = @user.permissions.find_by(name: params[:user][:permission])
+      def find_user_permission
+        @user_permission = @user.permissions.find_by(name: params[:user][:permission])
       end
 
       def current_ability
