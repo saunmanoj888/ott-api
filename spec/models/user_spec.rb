@@ -41,11 +41,15 @@ RSpec.describe User, type: :model do
     describe '.set_default_non_admin_permissions' do
       context 'When User Sign up successfully' do
         before { create_admin_applicable_permissions }
+
         it 'creates default non admin permissions for the User' do
           expect {
             new_user.save
           }.to change { new_user.permissions.count }.from(0).to(5)
+
+          expect(new_user.permissions.pluck(:name)).to eq(Permission::List::NON_ADMIN_APPLICABLE)
         end
+
         it 'should not have permission to delete ratings by default' do
           expect(user.permissions).to_not include(Permission.named('can_delete_rating'))
         end
