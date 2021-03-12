@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_10_181627) do
+ActiveRecord::Schema.define(version: 2021_03_12_123923) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,14 +49,6 @@ ActiveRecord::Schema.define(version: 2021_03_10_181627) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "permissions_users", id: false, force: :cascade do |t|
-    t.bigint "user_id"
-    t.bigint "permission_id"
-    t.index ["permission_id", "user_id"], name: "index_permissions_users_on_permission_id_and_user_id", unique: true
-    t.index ["permission_id"], name: "index_permissions_users_on_permission_id"
-    t.index ["user_id"], name: "index_permissions_users_on_user_id"
-  end
-
   create_table "professions", force: :cascade do |t|
     t.string "designation"
     t.datetime "created_at", precision: 6, null: false
@@ -91,6 +83,15 @@ ActiveRecord::Schema.define(version: 2021_03_10_181627) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "is_admin", default: false
+  end
+
+  create_table "users_permissions", force: :cascade do |t|
+    t.bigint "permission_id"
+    t.bigint "user_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["permission_id"], name: "index_users_permissions_on_permission_id"
+    t.index ["user_id"], name: "index_users_permissions_on_user_id"
   end
 
 end

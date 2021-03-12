@@ -12,7 +12,8 @@ RSpec.describe User, type: :model do
 
   it { should have_many(:ratings).dependent(:destroy) }
   it { should have_many(:reviews).dependent(:destroy) }
-  it { should have_and_belong_to_many(:permissions) }
+  it { should have_many(:users_permissions) }
+  it { should have_many(:permissions).through(:users_permissions) }
 
   describe 'Instance Methods' do
     describe '#full_name' do

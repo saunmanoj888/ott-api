@@ -5,7 +5,8 @@ class User < ApplicationRecord
 
   has_many :ratings, dependent: :destroy
   has_many :reviews, dependent: :destroy
-  has_and_belongs_to_many :permissions
+  has_many :users_permissions
+  has_many :permissions, through: :users_permissions
 
   after_create :set_default_non_admin_permissions
 
