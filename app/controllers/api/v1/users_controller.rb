@@ -16,10 +16,10 @@ module Api
       end
 
       def remove_permission
-        if @user.permissions.destroy(@permission)
+        if @permission && @user.permissions.destroy(@permission)
           json_response({ message: 'Permission removed successfully' })
         else
-          json_response({ error: 'Unable to remove permission' }, :bad_request)
+          json_response({ error: 'Could not find Permission for the User' }, :not_found)
         end
       end
 
@@ -30,7 +30,7 @@ module Api
       end
 
       def find_permission
-        @permission = Permission.find_by!(name: params[:user][:permission])
+        @permission = @user.permissions.find_by(name: params[:user][:permission])
       end
 
       def current_ability
