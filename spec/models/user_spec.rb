@@ -40,7 +40,7 @@ RSpec.describe User, type: :model do
   describe 'Callbacks' do
     describe '.set_default_non_admin_permissions' do
       context 'When User Sign up successfully' do
-        before { create_all_permissions }
+        before { create_admin_applicable_permissions }
         it 'creates default non admin permissions for the User' do
           expect {
             new_user.save

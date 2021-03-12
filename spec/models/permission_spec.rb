@@ -16,7 +16,7 @@ RSpec.describe Permission, type: :model do
     end
 
     describe '.non_admin_permissions' do
-      before { create_all_permissions }
+      before { create_admin_applicable_permissions }
       it 'includes only non admin permissions' do
         expect(Permission.non_admin_permissions).to include(create_review_permission)
         expect(Permission.non_admin_permissions.count).to eq(5)
