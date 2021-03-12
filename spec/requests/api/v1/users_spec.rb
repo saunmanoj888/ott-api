@@ -102,6 +102,61 @@ RSpec.describe 'Users', type: :request do
     end
   end
 
+  describe 'POST /api/v1/users/:id/assign_permission' do
+    before { create(:permission, :create_review) }
+
+    context 'When User is logged in' do
+
+      context 'When User is Admin' do
+        before { login(create(:user, :admin)) }
+
+        context 'When Admin enters permission which User does not have' do
+          before { user.permissions.destroy(Permission.find_by(name: 'can_create_review')) }
+
+          it 'adds the permissions successfully' do
+            post "/api/v1/users/#{user.id}/assign_permission", params: permission_argument('can_create_review')
+            expect(response.body).to match(/Permission assigned successfully/)
+            expect(response.status).to eq 200
+          end
+        end
+
+        context 'When Admin enters invalid permission in params' do
+          it 'returns not found error message' do
+            post "/api/v1/users/#{user.id}/assign_permission", params: permission_argument('incorrect_permission')
+            expect(response.body).to match(/Permission must exist/)
+            expect(response.status).to eq 400
+          end
+        end
+
+        context 'When Admin enters permission which User already have' do
+          it 'returns validation failure message' do
+            post "/api/v1/users/#{user.id}/assign_permission", params: permission_argument('can_create_review')
+            expect(response.body).to match(/Permission has already been taken/)
+            expect(response.status).to eq 400
+          end
+        end
+      end
+
+      context 'When User is not Admin' do
+        before { login(create(:user, :non_admin)) }
+
+        it 'returns unauthorised failure message' do
+          post "/api/v1/users/#{user.id}/assign_permission", params: permission_argument('can_create_review')
+          expect(response.body).to match(/You are not allowed to perform this action./)
+          expect(response.status).to eq 401
+        end
+      end
+    end
+
+    context 'When User is logged out' do
+      it 'returns a login failure message' do
+        post "/api/v1/users/#{user.id}/assign_permission", params: permission_argument('can_create_review')
+        expect(response.body).to match(/Please log in/)
+        expect(response.status).to eq 401
+      end
+    end
+  end
+
   private
 
   def user_params(email, password)

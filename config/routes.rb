@@ -7,7 +7,10 @@ Rails.application.routes.draw do
         resources :reviews, only: [:create, :update, :index, :destroy]
       end
       resources :users, only: [:create] do
-        delete 'remove_permission', on: :member
+        member do
+          delete 'remove_permission'
+          post 'assign_permission'
+        end
       end
     end
   end
