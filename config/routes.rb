@@ -12,6 +12,7 @@ Rails.application.routes.draw do
           post 'assign_permission'
         end
       end
+      resources :permissions, only: [:create, :destroy]
     end
   end
 end
