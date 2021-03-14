@@ -68,7 +68,7 @@ RSpec.describe 'Users', type: :request do
         context 'When Admin enters invalid permission in params' do
           it 'returns a not found error message' do
             delete "/api/v1/users/#{user.id}/remove_permission", params: permission_argument('incorrect_permission')
-            expect(response.body).to match(/Could not find Permission for the User/)
+            expect(response.body).to match(/User does not have this permission assigned/)
             expect(response.status).to eq 404
           end
         end
@@ -76,7 +76,7 @@ RSpec.describe 'Users', type: :request do
         context 'When Admin enters permission which User does not have' do
           it 'returns a not found error message' do
             delete "/api/v1/users/#{user.id}/remove_permission", params: permission_argument('can_delete_rating')
-            expect(response.body).to match(/Could not find Permission for the User/)
+            expect(response.body).to match(/User does not have this permission assigned/)
             expect(response.status).to eq 404
           end
         end
