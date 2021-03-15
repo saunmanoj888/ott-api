@@ -42,6 +42,10 @@ module Api
         params.require(:movie).permit(:title, :description, :release_date, :budget)
       end
 
+      def current_ability
+        @current_ability ||= MovieAbility.new(current_user)
+      end
+
     end
   end
 end

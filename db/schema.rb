@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_09_091207) do
+ActiveRecord::Schema.define(version: 2021_03_12_123923) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,6 +38,12 @@ ActiveRecord::Schema.define(version: 2021_03_09_091207) do
   end
 
   create_table "people", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "permissions", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -77,6 +83,15 @@ ActiveRecord::Schema.define(version: 2021_03_09_091207) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "is_admin", default: false
+  end
+
+  create_table "users_permissions", force: :cascade do |t|
+    t.bigint "permission_id"
+    t.bigint "user_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["permission_id"], name: "index_users_permissions_on_permission_id"
+    t.index ["user_id"], name: "index_users_permissions_on_user_id"
   end
 
 end
